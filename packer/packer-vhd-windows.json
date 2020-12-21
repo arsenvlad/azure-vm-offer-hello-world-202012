@@ -1,0 +1,56 @@
+{
+    "variables": {
+        "subscription_id": "{{env `AZURE_SUBSCRIPTION_ID`}}",
+        "tenant_id": "{{env `AZURE_TENANT_ID`}}",
+        "client_id": "{{env `AZURE_CLIENT_ID`}}",
+        "client_secret": "{{env `AZURE_CLIENT_SECRET`}}",
+        "location": "eastus2",
+        "storage_resource_group": "",
+        "storage_account": ""
+    },
+    "sensitive-variables": ["client_secret"],
+    "builders": [{
+            "type": "azure-arm",
+            "subscription_id": "{{user `subscription_id`}}",
+            "tenant_id": "{{user `tenant_id`}}",
+            "client_id": "{{user `client_id`}}",
+            "client_secret": "{{user `client_secret`}}",
+            
+            "os_type": "Windows",
+            "image_publisher": "MicrosoftWindowsServer",
+            "image_offer": "WindowsServer",
+            "image_sku": "2019-Datacenter",
+            "image_version": "latest",
+
+            "communicator": "winrm",
+            "winrm_use_ssl": true,
+            "winrm_insecure": true,
+            "winrm_timeout": "5m",
+
+            "location": "{{user `location`}}",
+            "vm_size": "Standard_DS2_v2",
+            "temp_resource_group_name": "packer-rg",
+            "temp_compute_name": "packervm",
+            "private_virtual_network_with_public_ip": true,
+            "custom_data_file": "",
+            "polling_duration_timeout": "0h30m0s",
+
+            "resource_group_name": "{{user `storage_resource_group`}}",
+            "storage_account": "{{user `storage_account`}}",
+            "capture_container_name": "packer",
+            "capture_name_prefix": "ubuntu1804"
+        }
+    ],
+    "provisioners": [{
+        "type": "powershell",
+        "inline": [
+            "Add-WindowsFeature Web-Server",
+            "while ((Get-Service RdAgent).Status -ne 'Running') { Start-Sleep -s 5 }",
+            "while ((Get-Service WindowsAzureGuestAgent).Status -ne 'Running') { Start-Sleep -s 5 }",
+            "mkdir C:\\my_custom_folder\\",
+            "echo Hello from Packer > C:\\my_custom_folder\\hello.txt",
+            "& $env:SystemRoot\\System32\\Sysprep\\Sysprep.exe /oobe /generalize /quiet /quit",
+            "while ($true) { $imageState = Get-ItemProperty HKLM:\\SOFTWARE\\Microsoft\\Windows\\CurrentVersion\\Setup\\State | Select ImageState; if($imageState.ImageState -ne 'IMAGE_STATE_GENERALIZE_RESEAL_TO_OOBE') { Write-Output $imageState.ImageState; Start-Sleep -s 10  } else { break } }"
+        ]
+    }]
+}

@@ -1,0 +1,61 @@
+{
+    "variables": {
+        "subscription_id": "{{env `AZURE_SUBSCRIPTION_ID`}}",
+        "tenant_id": "{{env `AZURE_TENANT_ID`}}",
+        "client_id": "{{env `AZURE_CLIENT_ID`}}",
+        "client_secret": "{{env `AZURE_CLIENT_SECRET`}}",
+        "location": "eastus2",
+        "sig_gallery_resource_group": "",
+        "sig_gallery_name": "",
+        "sig_image_name": "",
+        "sig_image_version": "1.0.0"
+    },
+    "sensitive-variables": ["client_secret"],
+    "builders": [{
+            "type": "azure-arm",
+            "subscription_id": "{{user `subscription_id`}}",
+            "tenant_id": "{{user `tenant_id`}}",
+            "client_id": "{{user `client_id`}}",
+            "client_secret": "{{user `client_secret`}}",
+            
+            "os_type": "Linux",
+            "image_publisher": "Canonical",
+            "image_offer": "UbuntuServer",
+            "image_sku": "18.04-LTS",
+            "image_version": "latest",
+
+            "location": "{{user `location`}}",
+            "vm_size": "Standard_DS2_v2",
+            "temp_resource_group_name": "packer-rg",
+            "temp_compute_name": "packervm",
+            "private_virtual_network_with_public_ip": true,
+            "custom_data_file": "",
+            "polling_duration_timeout": "0h30m0s",
+
+            "managed_image_name": "packer-image",
+            "managed_image_resource_group_name": "{{user `sig_gallery_resource_group`}}",
+
+            "shared_image_gallery_destination": {
+                "subscription": "{{user `subscription_id`}}",
+                "resource_group": "{{user `sig_gallery_resource_group`}}",
+                "gallery_name": "{{user `sig_gallery_name`}}",
+                "image_name": "{{user `sig_image_name`}}",
+                "image_version": "{{user `sig_image_version`}}",
+                "replication_regions": ["{{user `location`}}"]
+            }
+        }
+    ],
+    "provisioners": [{
+        "type": "shell",
+        "inline_shebang": "/bin/sh -x -e",
+        "execute_command": "chmod +x {{ .Path }}; {{ .Vars }} sudo -E sh '{{ .Path }}'",
+        "inline": [
+            "apt-get update",
+            "apt-get upgrade -y",
+            "apt-get install -y nginx",
+            "mkdir -p /my_custom_folder",
+            "echo 'Hello from Packer' > /my_custom_folder/hello.txt",
+            "/usr/sbin/waagent -force -deprovision+user && export HISTSIZE=0 && sync"
+        ]
+    }]
+}

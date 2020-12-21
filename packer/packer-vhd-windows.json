@@ -38,7 +38,7 @@
             "resource_group_name": "{{user `storage_resource_group`}}",
             "storage_account": "{{user `storage_account`}}",
             "capture_container_name": "packer",
-            "capture_name_prefix": "ubuntu1804"
+            "capture_name_prefix": "windows2019"
         }
     ],
     "provisioners": [{

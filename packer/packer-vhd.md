@@ -45,7 +45,7 @@ Create SAS for the VHD to use in Partner Center
 
 ```bash
 # Generate SAS for the container called /system where unmanaged VHD image was captured
-az storage container generate-sas --account-name avvhdstorage100 --name system --permissions rl --start "2020-12-01T00:00:00Z" --expiry "2020-12-31T00:00:00Z"
+az storage container generate-sas --account-name avvhdstorage100 --name system --permissions rl --start "2020-12-01T00:00:00Z" --expiry "2021-01-31T00:00:00Z"
 
 # Append SAS token to the URL of the container to use in Partner Center
 # For example: https://avvhdstorage100.blob.core.windows.net/system/Microsoft.Compute/Images/packer/ubuntu1804-osDisk.fbe76a89-9b5f-4240-93b8-331e6be1af98.vhd?SAS_SIGNATURE_HERE
@@ -58,7 +58,7 @@ Create test VM from the VHD image
 az group create --name avtestvm100 --location eastus2
 
 # Create managed image from the VHD that Packer generated
-az image create --resource-group avtestvm100 --name ubuntu-image --source "https://avvhdstorage100.blob.core.windows.net/system/Microsoft.Compute/Images/packer/ubuntu1804-osDisk.fbe76a89-9b5f-4240-93b8-331e6be1af98.vhd" --location eastus2 --os-type "Linux" --storage-sku "Standard_LRS"
+az image create --resource-group avtestvm100 --name ubuntu-image --source "https://avvhdstorage100.blob.core.windows.net/system/Microsoft.Compute/Images/packer/ubuntu1804-osDisk.3360fdfb-f29c-4a05-bb55-9e81cd12dd8a.vhd" --location eastus2 --os-type "Linux" --storage-sku "Standard_LRS"
 
 # Create test VM with public IP
 az vm create --resource-group avtestvm100 --name ubuntuvm --image ubuntu-image --admin-username azureuser --admin-password "Password@123"

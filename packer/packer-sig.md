@@ -73,10 +73,10 @@ az storage account create --resource-group avsig200 --name avvhdstorage200 --loc
 az storage container create --resource-group avsig200 --account-name avvhdstorage200 --name myvhds
 
 # Create writable SAS URL for the container
-az storage container generate-sas --account-name avvhdstorage200 --name myvhds --permissions acw --expiry "2020-12-01T00:00:00Z"
+az storage container generate-sas --account-name avvhdstorage200 --name myvhds --permissions acw --expiry "2021-12-31T00:00:00Z"
 
 # Copy managed disk using its SAS URL to the container
-azcopy copy "https://md-dcbqwqxfvbjb.blob.core.windows.net/f3gcv45nzg0z/abcd?sv=2018-03-28&sr=b&si=01897e7a-826c-4cd7-8229-0b0e1e30e5ec&sig=MhjTJ60QbJpegOhxLDHynHGkh935D6e7zpOyqIHd1gE%3D" "https://avvhdstorage200.blob.core.windows.net/myvhds/myimage1.vhd?se=2020-12-01T00%3A00%3A00Z&sp=acw&sv=2018-11-09&sr=c&sig=xIQxuK%2BfjUgAXSsXF%2B6fzY05GbNfUWuT3owl8LhhHTc%3D"
+azcopy copy "https://md-dcbqwqxfvbjb.blob.core.windows.net/h3zkdptwt0pz/abcd?....." "https://avvhdstorage200.blob.core.windows.net/myvhds/myimage1.vhd?WRITABLE_SAS_FOR_THE_CONTAINER"
 
 # Create SAS for the VHD to use in Partner Center
 az storage container generate-sas --account-name avvhdstorage200 --name myvhds --permissions rl --start "2020-12-01T00:00:00Z" --expiry "2021-01-31T00:00:00Z"

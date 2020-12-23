@@ -1,6 +1,6 @@
 # Azure Virtual Machine (VM) Offer - Hello World Example (December 2020)
 
-This repo contains a simple "Hello World" style example of Azure Virtual Machine offer that is used in a video tutorial.
+This repo contains a simple "Hello World" style example of Azure Virtual Machine Offer that is used in this video tutorial [Simple Azure Marketplace Virtual Machine Offer: creating VM images and publishing in Partner Center](https://arsenvlad.medium.com/simple-azure-marketplace-virtual-machine-offer-creating-vm-images-and-publishing-in-partner-center-599bb0140689)
 
 ## Create Azure VM Image
 
@@ -53,13 +53,13 @@ For fully published images we can use the built in command [az vm image terms ac
 Instead, we check the preview image terms using ***REST API***
 
 ```bash
-az rest --method get --url "/subscriptions/c9c8ae57-acdb-48a9-99f8-d57704f18dee/providers/Microsoft.MarketplaceOrdering/offertypes/virtualmachine/publishers/PUBLISHER_NAME/offers/test_arsenv_vm02-preview/plans/ubuntu1804/agreements/current?api-version=2015-06-01"
+az rest --method get --url "/subscriptions/c9c8ae57-acdb-48a9-99f8-d57704f18dee/providers/Microsoft.MarketplaceOrdering/offertypes/virtualmachine/publishers/PUBLISHER_NAME/offers/test_arsenv_vm02-preview/plans/ubuntu1804/agreements/current?api-version=2015-06-01" -o json
 ```
 
-If the terms are not marked as accepted=true, we need to take the JSON output, change the "accepted":true in a JSON file and then do a REST PUT call:
+If the terms are not marked as ```"accepted": true```, we need to take the JSON output, change the ```"accepted": true``` in a JSON file and then do a REST PUT call:
 
 ```bash
-az rest --method put --url "/subscriptions/c9c8ae57-acdb-48a9-99f8-d57704f18dee/providers/Microsoft.MarketplaceOrdering/offertypes/virtualmachine/publishers/PUBLISHER_NAME/offers/test_arsenv_vm02-preview/plans/ubuntu1804/agreements/current?api-version=2015-06-01" --body @terms.json
+az rest --method put --url "/subscriptions/c9c8ae57-acdb-48a9-99f8-d57704f18dee/providers/Microsoft.MarketplaceOrdering/offertypes/virtualmachine/publishers/PUBLISHER_NAME/offers/test_arsenv_vm02-preview/plans/ubuntu1804/agreements/current?api-version=2015-06-01" --body @terms.json -o json
 ```
 
 After terms are successfully accepted, we can re-try the ```az vm create``` command.
